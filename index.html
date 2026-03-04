@@ -225,7 +225,7 @@
 
         try {
             // VERIFIQUE SE ESTE LINK ABAIXO É O DA SUA ÚLTIMA IMPLANTAÇÃO
-            const scriptURL = "https://script.google.com/macros/s/AKfycbz9y83QzOpW9UovqaZyALKyP2tTRblEuVO8BekVcIwhl33HAlez8Ra4yVr7YPWIe_1j6g/exec";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxQUCgymmfSD5u_rOAyS84GpUXrTDNI4G5EbjZZ4kMXaJP3GGgQlq81Nvs8pM7kJxJSeg/exec";
             await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none";
             document.getElementById("step-form").style.display = "none";
