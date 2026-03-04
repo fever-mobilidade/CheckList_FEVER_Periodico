@@ -45,31 +45,40 @@
 
     <div id="step-form">
         <form id="formFever">
-            <label>Placa do veículo *</label><input type="text" id="placa" required maxlength="8" placeholder="ex: ABC1D23">
-            <label>Chassi (8 últimos dígitos - no Caminhão está no parabrisa, no Triciclo está na coluna direção) *</label><input type="text" id="chassi" maxlength="8" required placeholder="ex: RA100256">
+            <label>Placa do veículo *</label>
+            <input type="text" id="placa" required maxlength="8" placeholder="ex: ABC1D23" style="text-transform: uppercase;">
+            
+            <label>Chassi *</label>
+            <input type="text" id="chassi" maxlength="17" required placeholder="Preenchimento automático">
             
             <label>Modelo do veículo *</label>
-            <select id="modeloVeiculo" required onchange="gerarCamposFotos()" style="font-size: 12px;">
-                <option value="" disabled selected>Selecione</option>
-                <optgroup label="NEXTEM (Caminhão)" style="font-size: 12px;">
+            <select id="modeloVeiculo" required onchange="gerarCamposFotos()">
+                <option value="" disabled selected>Selecione a Placa acima</option>
+                <optgroup label="NEXTEM (Caminhão)">
                     <option value="NEXTEM FN1000 HIGH BOX">NEXTEM FN1000 HIGH BOX</option>
                     <option value="NEXTEM FN1000 MEGA BOX">NEXTEM FN1000 MEGA BOX</option>
                     <option value="NEXTEM FN1000 PICK-UP">NEXTEM FN1000 PICK-UP</option>
                     <option value="NEXTEM FN1000 FRIGO">NEXTEM FN1000 FRIGO</option>
                 </optgroup>
-                <optgroup label="RAP (Triciclo)" style="font-size: 12px;">
+                <optgroup label="RAP (Triciclo)">
                     <option value="RAP FR250 BOX">RAP FR250 BOX</option>
                     <option value="RAP FR250 CAGE">RAP FR250 CAGE</option>
+                    <option value="RAP FR250 PET">RAP FR250 PET</option>
                     <option value="RAP FR150 FRIGO">RAP FR150 FRIGO</option>
                     <option value="RAP FR110 BOX">RAP FR110 BOX</option>
                 </optgroup>
             </select>
 
-            <label>KM Atual *</label><input type="number" id="km" required maxlength="12">
-            <label>Empresa (Cliente) *</label><input type="text" id="empresa" required maxlength="50">
-            <label>CNPJ Empresa *</label><input type="text" id="cnpj" oninput="maskCNPJ(this)" required maxlength="18">
+            <label>KM Atual *</label><input type="number" id="km" required>
+            
+            <label>Empresa (Cliente) *</label><input type="text" id="empresa" required placeholder="Preenchimento automático">
+            
+            <label>CNPJ Empresa *</label><input type="text" id="cnpj" oninput="maskCNPJ(this)" required maxlength="18" placeholder="Preenchimento automático">
+            
             <label>Nome do Usuário *</label><input type="text" id="cliente" required maxlength="30">
+            
             <label>Telefone *</label><input type="tel" id="telefone" oninput="maskTel(this)" required maxlength="15">
+            
             <label>Data do Checklist *</label><input type="date" id="dataRecebimento" required>
 
             <label>Algum Dano constatado?</label>
@@ -80,22 +89,22 @@
 
             <h3>Fotos do veículo</h3>
             <div id="gridFotos">
-                <p style="color: #666; font-size: 12px;">Selecione o modelo do veículo para carregar as fotos necessárias.</p>
+                <p style="color: #666; font-size: 12px;">Aguardando a placa para carregar as fotos...</p>
             </div>
 
             <div style="background: #f9f9f9; border: 1px solid #ccc; padding: 15px; border-radius: 4px; margin-top: 20px;">
                 <p style="font-size: 13px; color: #444; line-height: 1.5; margin: 0 0 10px 0; text-align: justify;">
-                    "Declaro que as informações prestadas e as fotos anexadas refletem o estado real do veículo. Esta assinatura está vinculada aos dados de geolocalização e identificação do dispositivo, servindo como evidência técnica de conformidade. Estou ciente de que a falsificação de dados acarretará responsabilidade civil e administrativa, conforme as políticas da FEVER Fleet."
+                    "Declaro que as informações prestadas e as fotos anexadas refletem o estado real do veículo. Esta assinatura está vinculada aos dados de geolocalização e identificação do dispositivo."
                 </p>
                 <label style="display: flex; align-items: center; background: none; border: none; padding: 0; margin-top: 10px; cursor: pointer;">
-                    <input type="checkbox" id="aceiteTermos" required style="width: 20px; height: 20px; margin-right: 10px; margin-top: 0;">
+                    <input type="checkbox" id="aceiteTermos" required style="width: 20px; height: 20px; margin-right: 10px;">
                     <span style="font-size: 14px; font-weight: bold; color: #000;">CONCORDO COM A DECLARAÇÃO ACIMA *</span>
                 </label>
             </div>
 
             <h3>Sua Assinatura *</h3>
             <canvas id="signature-pad"></canvas>
-            <button type="button" onclick="pad.clear()" style="width:100%; padding:10px; margin-top:5px;">Limpar</button>
+            <button type="button" onclick="pad.clear()" style="width:100%; padding:10px; margin-top:5px;">Limpar Assinatura</button>
             <button type="submit" class="btn-main">FINALIZAR E ENVIAR</button>
         </form>
     </div>
@@ -104,7 +113,6 @@
         <h1 style="font-size: 80px; color: #00ffcc; margin: 0;">✔</h1>
         <h2>Enviado com Sucesso!</h2>
         <button onclick="location.reload()" class="btn-main">NOVO CHECKLIST</button>
-        <button onclick="fecharJanela()" class="btn-main btn-secondary">FECHAR EM <span id="timer">10</span>s</button>
     </div>
 </div>
 
@@ -115,16 +123,33 @@
     let pad;
     const fotos = {};
 
-    // Listas de etiquetas de fotos dinâmicas
-    const fotosNextem = ["Foto Frente", "Foto Lateral Direita", "Foto Traseira", "Foto Lateral Esquerda", "Foto Placa", "Foto Chassi", "Foto Painel/KM (LIGADO)", "Foto Cabine interna", "Foto Interna do Baú", "Foto Capô interna", "Foto Roda/Pneu (DIANTEIRO) Motorista", "Foto Roda/Pneu (DIANTEIRO) Passageiro", "Foto Roda/Pneu (TRASEIRO) Motorista", "Foto Roda/Pneu (TRASEIRO) Passageiro", "Foto Estação de Recarga portatil", "Foto Frasco Reparador de Pneu"];
+    const fotosNextem = ["Foto Frente", "Foto Lateral Direita", "Foto Traseira", "Foto Lateral Esquerda", "Foto Placa", "Foto Chassi", "Foto Painel/KM (LIGADO)", "Foto Cabine interna", "Foto Interna do Baú", "Foto Capô interna", "Foto Roda/Pneu (DIANTEIRO) Motorista", "Foto Roda/Pneu (DIANTEIRO) Passageiro", "Foto Roda/Pneu (TRASEIRO) Motorista", "Foto Roda/Pneu (TRASEIRO) Passageiro", "Foto Estação de Recarga portátil", "Foto Frasco Reparador de Pneu"];
     const fotosRap = ["Foto Frente", "Foto Lateral Direita", "Foto Traseira", "Foto Lateral Esquerda", "Foto Placa", "Foto Chassi", "Foto Painel/KM (LIGADO)", "Foto Banco (assento)", "Foto Interna do Baú", "Foto Roda/Pneu (DIANTEIRO)", "Foto Roda/Pneu (Traseiro Direito)", "Foto Roda/Pneu (Traseiro Esquerdo)", "Foto Estação de Recarga", "Foto Kit Ferramentas"];
+
+    // --- BUSCA AUTOMÁTICA NA PLANILHA ---
+    document.getElementById("placa").addEventListener("blur", function() {
+        const placaValue = this.value.toUpperCase().trim();
+        if (placaValue.length >= 7) {
+            google.script.run.withSuccessHandler(function(veiculo) {
+                if (veiculo.encontrado) {
+                    document.getElementById("chassi").value = veiculo.chassi;
+                    document.getElementById("modeloVeiculo").value = veiculo.modelo;
+                    document.getElementById("empresa").value = veiculo.empresa;
+                    document.getElementById("cnpj").value = veiculo.cnpj;
+                    gerarCamposFotos(); // Atualiza as fotos conforme o modelo encontrado
+                } else {
+                    alert("Aviso: Placa não encontrada no banco de dados. Por favor, preencha manualmente.");
+                }
+            }).buscarDadosVeiculo(placaValue);
+        }
+    });
 
     function gerarCamposFotos() {
         const modelo = document.getElementById('modeloVeiculo').value;
         const grid = document.getElementById('gridFotos');
-        grid.innerHTML = ""; // Limpa fotos anteriores
+        grid.innerHTML = "";
         
-        // Limpa o objeto fotos para não enviar lixo de um modelo anterior
+        // Limpa fotos anteriores
         for (let prop in fotos) { if (fotos.hasOwnProperty(prop)) { delete fotos[prop]; } }
 
         let listaAtual = modelo.includes("NEXTEM") ? fotosNextem : fotosRap;
@@ -140,7 +165,6 @@
         const btn = document.getElementById('btn-gps');
         btn.disabled = true;
         btn.innerText = "CALIBRANDO GPS...";
-        if (!navigator.geolocation) return alert("GPS não suportado.");
 
         watchId = navigator.geolocation.watchPosition((p) => {
             const acc = p.coords.accuracy;
@@ -152,7 +176,7 @@
                 document.getElementById('step-form').style.display = 'block';
                 if (!pad) { pad = new SignaturePad(canvas); resizeCanvas(); }
             } else {
-                status.innerText = "Aguardando sinal de satélite estável...";
+                status.innerText = "Aguardando sinal estável...";
                 status.style.color = "orange";
             }
         }, (e) => { alert("Ative o GPS."); btn.disabled = false; }, { enableHighAccuracy: true });
@@ -180,48 +204,4 @@
     }
 
     function maskTel(i) { let v = i.value.replace(/\D/g, ""); v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); v = v.replace(/(\d)(\d{4})$/, "$1-$2"); i.value = v; }
-    function maskCNPJ(i) { let v = i.value.replace(/\D/g, ""); v = v.replace(/^(\d{2})(\d)/, "$1.$2"); v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3"); v = v.replace(/\.(\d{3})(\d)/, ".$1/$2"); v = v.replace(/(\d{4})(\d)/, "$1-$2"); i.value = v; }
-    function resizeCanvas() { const ratio = Math.max(window.devicePixelRatio || 1, 1); canvas.width = canvas.offsetWidth * ratio; canvas.height = canvas.offsetHeight * ratio; canvas.getContext("2d").scale(ratio, ratio); }
-    function fecharJanela() { window.close(); setTimeout(() => { window.location.href = "about:blank"; }, 500); }
-    function iniciarTimer() { let seg = 10; const t = setInterval(() => { seg--; document.getElementById('timer').innerText = seg; if(seg <= 0) { clearInterval(t); fecharJanela(); } }, 1000); }
-
-    document.getElementById("formFever").onsubmit = async (e) => {
-        e.preventDefault();
-        if(pad.isEmpty()) return alert("Assinatura obrigatória!");
-        if(!document.getElementById("aceiteTermos").checked) return alert("Aceite a declaração de veracidade.");
-
-        document.getElementById("loading").style.display = "flex";
-        
-        const payload = { 
-            ...fotos, 
-            placa: document.getElementById("placa").value, 
-            chassi: document.getElementById("chassi").value, 
-            modelo: document.getElementById("modeloVeiculo").value, 
-            km: document.getElementById("km").value, 
-            empresa: document.getElementById("empresa").value, 
-            cnpj: document.getElementById("cnpj").value, 
-            cliente: document.getElementById("cliente").value, 
-            telefone: document.getElementById("telefone").value, 
-            dataRecebimento: document.getElementById("dataRecebimento").value, 
-            dano: document.getElementById("dano").value, 
-            desc: document.getElementById("desc").value || "Sem obs", 
-            assinatura: pad.toDataURL(), 
-            localizacao: userLoc, 
-            timestamp: new Date().toLocaleString("pt-BR") 
-        };
-
-        try {
-            const scriptURL = "https://script.google.com/macros/s/AKfycbwL7a44jLj4vqD5ortLQXw_cfYq67nc_xmn-UqAFU8q-eNF9c2wVqNEEGjALjPKfYzF4A/exec";
-            await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("step-form").style.display = "none";
-            document.getElementById("success-screen").style.display = "block";
-            iniciarTimer();
-        } catch (err) { 
-            alert("Erro no envio."); 
-            document.getElementById("loading").style.display = "none"; 
-        }
-    };
-</script>
-</body>
-</html>
+    function maskCNPJ(i) { let v = i.value.replace(/\D/g, ""); v = v.replace(/^(\d{2})(\d)/
