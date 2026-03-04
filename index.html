@@ -150,7 +150,7 @@
                 document.getElementById('chassi').value = v[1]; document.getElementById('modeloVeiculo').value = v[2];
                 document.getElementById('empresa').value = v[3]; document.getElementById('cnpj').value = v[4];
                 msg.innerText = "✅ Localizado!"; msg.style.color = "green"; gerarCamposFotos();
-            } else { msg.innerText = "❌ Não encontrada!"; msg.style.color = "red"; placaAtiva = ""; limparCamposAuto(); }
+            } else { msg.innerText = "❌ Placa Não encontrada!"; msg.style.color = "red"; placaAtiva = ""; limparCamposAuto(); }
         } catch (e) { msg.innerText = "⚠️ Erro de rede."; }
     }
 
