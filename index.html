@@ -106,7 +106,7 @@
 
             <div style="background: #f9f9f9; border: 1px solid #ccc; padding: 15px; border-radius: 4px; margin-top: 20px;">
                 <p style="font-size: 13px; color: #444; text-align: justify;">
-                    "Declaro que as informações prestadas e as fotos anexadas refletem o estado real do veículo..."
+                    "Declaro que as informações prestadas e as fotos anexadas refletem o estado real do veículo. Esta assinatura está vinculada aos dados de geolocalização e identificação do dispositivo, servindo como evidência técnica de conformidade. Estou ciente de que a falsificação de dados acarretará responsabilidade civil e administrativa, conforme as políticas da FEVER Fleet."
                 </p>
                 <label style="display: flex; align-items: center;">
                     <input type="checkbox" id="aceiteTermos" required style="width: 20px; height: 20px; margin-right: 10px;">
@@ -227,7 +227,7 @@
         document.getElementById("loading").style.display = "flex";
         const payload = { ...fotos, fotoDano: fotoAvariaBase64, placa: document.getElementById("placa").value, chassi: document.getElementById("chassi").value, modelo: document.getElementById("modeloVeiculo").value, km: document.getElementById("km").value, empresa: document.getElementById("empresa").value, cnpj: document.getElementById("cnpj").value, cliente: document.getElementById("cliente").value, telefone: document.getElementById("telefone").value, dano: statusDano, desc: document.getElementById("desc").value || "Sem obs", assinatura: pad.toDataURL(), localizacao: userLoc, timestamp: new Date().toLocaleString("pt-BR") };
         try {
-            await fetch("https://script.google.com/macros/s/AKfycbyI3hc4Uuk-YRqsgEN8gbA1lk7zug4obpFF9USsFXwaOaXi7L2-aZxdw6quZBDxhEXo/exec", 
+            await fetch("https://script.google.com/macros/s/AKfycbxP3lODtVe0_gS6Jj2nEjle4AwztgQQkx7yR3_3CiU9qflxrTwXKVZcpYqXMdVLYdg9Iw/exec", 
             { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none"; document.getElementById("step-form").style.display = "none"; document.getElementById("success-screen").style.display = "block"; iniciarTimer();
         } catch (err) { alert("Erro ao enviar."); document.getElementById("loading").style.display = "none"; }
