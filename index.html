@@ -250,7 +250,7 @@
         };
 
         try {
-            const scriptURL = "https://script.google.com/macros/s/AKfycbwL7a44jLj4vqD5ortLQXw_cfYq67nc_xmn-UqAFU8q-eNF9c2wVqNEEGjALjPKfYzF4A/exec";
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxxCkxmL1hpceWxTECrco75o66q3Tl9xtcb5Mk8rbj7cf2IAGLDK4FLZ24zO4cHOhxz/exec";
             await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none";
             document.getElementById("step-form").style.display = "none";
