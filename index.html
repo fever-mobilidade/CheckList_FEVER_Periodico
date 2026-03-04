@@ -67,7 +67,7 @@
             <div class="placa-container">
                 <label style="margin-top:0;">DIGITE A PLACA DO VEÍCULO *</label>
                 <div class="busca-container">
-                    <input type="text" id="placa" class="placa-input" required maxlength="7" placeholder="Ex: ABC1D23" oninput="this.value = this.value.toUpperCase()" onblur="buscarNoBanco(this.value) onfocus="this.placeholder = ''"  ">
+                    <input type="text" id="placa" class="placa-input" required maxlength="7" placeholder="Ex:ABC1D23" oninput="this.value = this.value.toUpperCase()" onblur="buscarNoBanco(this.value)" onfocus="this.value = ''; this.placeholder = '';" >
                     <button type="button" class="btn-busca" onclick="buscarNoBanco(document.getElementById('placa').value)">BUSCAR</button>
                 </div>
                 <p id="msg-busca"></p>
