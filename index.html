@@ -16,6 +16,7 @@
         #success-screen { display: none; text-align: center; padding: 40px 10px; }
         label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
         input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
+        #placa { text-transform: uppercase; } /* Força visualmente maiúsculas */
         .photo-item { background: #f9f9f9; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; border: 1px solid #ddd; }
         .preview-img { width: 100%; height: auto; max-height: 250px; object-fit: contain; display: none; margin-top: 10px; border: 2px solid #000; border-radius: 4px; }
         canvas#signature-pad { border: 2px solid #000; width: 100%; height: 200px; background: #fff; border-radius: 4px; cursor: crosshair; touch-action: none; }
@@ -46,10 +47,10 @@
     <div id="step-form">
         <form id="formFever">
             <label>Placa do veículo *</label>
-            <input type="text" id="placa" required maxlength="8" placeholder="ex: ABC1D23" onblur="buscarDadosPlanilha(this.value)">
+            <input type="text" id="placa" required maxlength="8" placeholder="ex: ABC1D23" oninput="this.value = this.value.toUpperCase()" onblur="buscarDadosPlanilha(this.value)">
             
-            <label>Chassi *</label>
-            <input type="text" id="chassi" required placeholder="Aguardando placa...">
+            <label>Chassi (8 últimos dígitos) *</label>
+            <input type="text" id="chassi" maxlength="17" required placeholder="Preenchimento automático">
             
             <label>Modelo do veículo *</label>
             <select id="modeloVeiculo" required onchange="gerarCamposFotos()">
@@ -122,21 +123,16 @@
     const fotosNextem = ["Foto Frente", "Foto Lateral Direita", "Foto Traseira", "Foto Lateral Esquerda", "Foto Placa", "Foto Chassi", "Foto Painel/KM (LIGADO)", "Foto Cabine interna", "Foto Interna do Baú", "Foto Capô interna", "Foto Roda/Pneu (DIANTEIRO) Motorista", "Foto Roda/Pneu (DIANTEIRO) Passageiro", "Foto Roda/Pneu (TRASEIRO) Motorista", "Foto Roda/Pneu (TRASEIRO) Passageiro", "Foto Estação de Recarga portatil", "Foto Frasco Reparador de Pneu"];
     const fotosRap = ["Foto Frente", "Foto Lateral Direita", "Foto Traseira", "Foto Lateral Esquerda", "Foto Placa", "Foto Chassi", "Foto Painel/KM (LIGADO)", "Foto Banco (assento)", "Foto Interna do Baú", "Foto Roda/Pneu (DIANTEIRO)", "Foto Roda/Pneu (Traseiro Direito)", "Foto Roda/Pneu (Traseiro Esquerdo)", "Foto Estação de Recarga", "Foto Kit Ferramentas"];
 
-    // NOVA FUNÇÃO: BUSCA DADOS AO SAIR DO CAMPO PLACA
+    // BUSCA AUTOMÁTICA
     function buscarDadosPlanilha(placa) {
         if (placa.length < 7) return;
-        
-        // Chama a função lá no Código.gs
-        google.script.run.withSuccessHandler(function(resultado) {
-            if (resultado.encontrado) {
-                document.getElementById('chassi').value = resultado.chassi;
-                document.getElementById('modeloVeiculo').value = resultado.modelo;
-                document.getElementById('empresa').value = resultado.empresa;
-                document.getElementById('cnpj').value = resultado.cnpj;
-                // Chama a função de fotos para carregar os campos do modelo encontrado
+        google.script.run.withSuccessHandler(function(res) {
+            if (res.encontrado) {
+                document.getElementById('chassi').value = res.chassi;
+                document.getElementById('modeloVeiculo').value = res.modelo;
+                document.getElementById('empresa').value = res.empresa;
+                document.getElementById('cnpj').value = res.cnpj;
                 gerarCamposFotos();
-            } else {
-                console.log("Placa não encontrada no banco.");
             }
         }).buscarDadosVeiculo(placa);
     }
@@ -170,7 +166,7 @@
                 document.getElementById('step-form').style.display = 'block';
                 if (!pad) { pad = new SignaturePad(canvas); resizeCanvas(); }
             } else {
-                status.innerText = "Aguardando sinal de satélite estável...";
+                status.innerText = "Aguardando sinal estável...";
                 status.style.color = "orange";
             }
         }, (e) => { alert("Ative o GPS."); btn.disabled = false; }, { enableHighAccuracy: true });
@@ -206,7 +202,7 @@
     document.getElementById("formFever").onsubmit = async (e) => {
         e.preventDefault();
         if(pad.isEmpty()) return alert("Assinatura obrigatória!");
-        if(!document.getElementById("aceiteTermos").checked) return alert("Aceite a declaração de veracidade.");
+        if(!document.getElementById("aceiteTermos").checked) return alert("Aceite a declaração.");
         document.getElementById("loading").style.display = "flex";
         
         const payload = { 
@@ -228,6 +224,7 @@
         };
 
         try {
+            // VERIFIQUE SE ESTE LINK ABAIXO É O DA SUA ÚLTIMA IMPLANTAÇÃO
             const scriptURL = "https://script.google.com/macros/s/AKfycbz9y83QzOpW9UovqaZyALKyP2tTRblEuVO8BekVcIwhl33HAlez8Ra4yVr7YPWIe_1j6g/exec";
             await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none";
