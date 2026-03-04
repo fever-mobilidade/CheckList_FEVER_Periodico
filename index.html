@@ -80,7 +80,7 @@
             
             <label>Nome do Usuário *</label><input type="text" id="cliente" required>
             <label>Telefone *</label><input type="tel" id="telefone" oninput="maskTel(this)" required>
-            <label>Data do Checklist *</label><input type="date" id="dataRecebimento" required>
+   
 
             <label>Algum Dano constatado?</label>
             <select id="dano" onchange="document.getElementById('campoObs').style.display=(this.value=='Sim'?'block':'none')">
@@ -225,9 +225,10 @@
         if(placaAtiva === "" || pad.isEmpty()) return alert("Valide a placa e assine!");
         
         document.getElementById("loading").style.display = "flex";
-        const payload = { ...fotos, fotoDano: fotoAvariaBase64, placa: document.getElementById("placa").value, chassi: document.getElementById("chassi").value, modelo: document.getElementById("modeloVeiculo").value, km: document.getElementById("km").value, empresa: document.getElementById("empresa").value, cnpj: document.getElementById("cnpj").value, cliente: document.getElementById("cliente").value, telefone: document.getElementById("telefone").value, dataRecebimento: document.getElementById("dataRecebimento").value, dano: statusDano, desc: document.getElementById("desc").value || "Sem obs", assinatura: pad.toDataURL(), localizacao: userLoc, timestamp: new Date().toLocaleString("pt-BR") };
+        const payload = { ...fotos, fotoDano: fotoAvariaBase64, placa: document.getElementById("placa").value, chassi: document.getElementById("chassi").value, modelo: document.getElementById("modeloVeiculo").value, km: document.getElementById("km").value, empresa: document.getElementById("empresa").value, cnpj: document.getElementById("cnpj").value, cliente: document.getElementById("cliente").value, telefone: document.getElementById("telefone").value, dano: statusDano, desc: document.getElementById("desc").value || "Sem obs", assinatura: pad.toDataURL(), localizacao: userLoc, timestamp: new Date().toLocaleString("pt-BR") };
         try {
-            await fetch("https://script.google.com/macros/s/AKfycbxxCkxmL1hpceWxTECrco75o66q3Tl9xtcb5Mk8rbj7cf2IAGLDK4FLZ24zO4cHOhxz/exec", { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+            await fetch("https://script.google.com/macros/s/AKfycbwo7pMuG7NwxZ6o410AlNKqIHUJfxpWktr1Rr6oaONALdJSTzBYj6io76qi5eZfnxZk/exec", 
+            { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none"; document.getElementById("step-form").style.display = "none"; document.getElementById("success-screen").style.display = "block"; iniciarTimer();
         } catch (err) { alert("Erro ao enviar."); document.getElementById("loading").style.display = "none"; }
     };
