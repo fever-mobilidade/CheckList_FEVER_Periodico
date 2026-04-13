@@ -227,7 +227,7 @@
         document.getElementById("loading").style.display = "flex";
         const payload = { ...fotos, fotoDano: fotoAvariaBase64, placa: document.getElementById("placa").value, chassi: document.getElementById("chassi").value, modelo: document.getElementById("modeloVeiculo").value, km: document.getElementById("km").value, empresa: document.getElementById("empresa").value, cnpj: document.getElementById("cnpj").value, cliente: document.getElementById("cliente").value, telefone: document.getElementById("telefone").value, dano: statusDano, desc: document.getElementById("desc").value || "Sem obs", assinatura: pad.toDataURL(), localizacao: userLoc, timestamp: new Date().toLocaleString("pt-BR") };
         try {
-            await fetch("https://script.google.com/macros/s/AKfycbxP3lODtVe0_gS6Jj2nEjle4AwztgQQkx7yR3_3CiU9qflxrTwXKVZcpYqXMdVLYdg9Iw/exec", 
+            await fetch("https://script.google.com/macros/s/AKfycbwq9SlcLP9bCDT27SU1w_mAo3wmA98abYt3qSGriNYeqxewrT4C2wsk0Q9tnq6GgPAb/exec", 
             { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
             document.getElementById("loading").style.display = "none"; document.getElementById("step-form").style.display = "none"; document.getElementById("success-screen").style.display = "block"; iniciarTimer();
         } catch (err) { alert("Erro ao enviar."); document.getElementById("loading").style.display = "none"; }
