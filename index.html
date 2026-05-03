@@ -213,7 +213,23 @@
     function maskTel(i) { let v = i.value.replace(/\D/g, ""); v = v.replace(/^(\d{2})(\d)/g, "($1) $2"); v = v.replace(/(\d)(\d{4})$/, "$1-$2"); i.value = v; }
     function resizeCanvas() { const ratio = Math.max(window.devicePixelRatio || 1, 1); canvas.width = canvas.offsetWidth * ratio; canvas.height = canvas.offsetHeight * ratio; canvas.getContext("2d").scale(ratio, ratio); }
     function fecharJanela() { window.close(); }
-    function iniciarTimer() { let seg = 10; setInterval(() => { seg--; if(document.getElementById('timer')) document.getElementById('timer').innerText = seg; if(seg<=0) fecharJanela(); }, 1000); }
+    function iniciarTimer() {
+        let seg = 10;
+        // Armazenamos o intervalo em uma variável chamada 'contador'
+        const contador = setInterval(() => {
+            seg--;
+            
+            const elementoTimer = document.getElementById('timer');
+            if (elementoTimer) {
+                elementoTimer.innerText = seg;
+            }
+
+            if (seg <= 0) {
+                clearInterval(contador); // PARA o relógio imediatamente
+                fecharJanela();
+            }
+        }, 1000);
+    }
 
     document.getElementById("formFever").onsubmit = async (e) => {
         e.preventDefault(); 
